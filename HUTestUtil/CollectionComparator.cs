@@ -8,12 +8,22 @@ namespace HUTestUtil
 {
     public class CollectionComparator<T>
     {
+        public CollectionComparator(double precision = 0.00001)
+        {
+            Precision = precision;
+        }
+        /// <summary>
+        /// Precision used to compare double and float.
+        /// </summary>
+        public double Precision { get; set; }
+
         /// <summary>
         /// usage:
+        /// var comparator = new CollectionComparator<string>();
         /// var result = comparator.Compare(list1, list2);
         /// Assert.IsTrue(result.Result, result.Message);
         /// </summary>
-        public CompareResult Compare(ICollection<T> firstList, ICollection<T> secondList)
+        public CompareResult IsEqual(ICollection<T> firstList, ICollection<T> secondList)
         {
             if ((firstList == null && secondList != null) ||
                 firstList != null && secondList == null)
@@ -34,7 +44,17 @@ namespace HUTestUtil
             int i = 0;
             foreach (var itemInFirst in firstList)
             {
-                if (!itemInFirst.Equals(secondList.ElementAt(i))) 
+                var itemInSecond = secondList.ElementAt(i);
+                if (typeof(T) == typeof(double) || typeof(T) == typeof(float))
+                {
+                    double double1 = (double)(object)itemInFirst;
+                    double double2 = (double)(object)itemInSecond;
+                    if (Math.Abs(double1 - double2) > Precision) 
+                    {
+                        return new CompareResult() { Result = false, Message = "Values index " + i + " differ. First collection: " + itemInFirst.ToString() + ", second: " + secondList.ElementAt(i) };
+                    }
+                }
+                else if (!itemInFirst.Equals(itemInSecond)) 
                 {
                     return new CompareResult() { Result = false, Message = "Values index " + i + " differ. First collection: " + itemInFirst.ToString() + ", second: " + secondList.ElementAt(i) };
                 }
