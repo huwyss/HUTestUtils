@@ -311,40 +311,5 @@ namespace GenericComparatorTest
             Assert.IsTrue(result.Message.Contains("Values at index 0 differ"));
 
         }
-
-        // --------------------------------------------------------------
-        // EnumerableClass
-        // --------------------------------------------------------------
-
-        [TestMethod]
-        public void EnumberableClassTest()
-        {
-            EnumberableClass tc = new EnumberableClass();
-            int sum = 0;
-            foreach (int val in tc)
-            {
-                sum += val;
-            }
-
-            Assert.AreEqual(tc.Sum(), sum);
-            Assert.AreEqual(1 + 3 + 4 + 5 + 6 + 8 + 10 + 20, sum);
-        }
-
-        class EnumberableClass : IEnumerable<int>
-        {
-            List<int> _list;
-            public EnumberableClass()
-            {
-                _list = new List<int>() { 1, 3, 4, 5, 6, 8, 10, 20 };
-            }
-            public IEnumerator<int> GetEnumerator()
-            {
-                return _list.GetEnumerator();
-            }
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return _list.GetEnumerator();
-            }
-        }
     }
 }
