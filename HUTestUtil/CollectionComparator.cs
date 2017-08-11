@@ -20,7 +20,7 @@ namespace HUTestUtil
         /// <summary>
         /// usage:
         /// var comparator = new CollectionComparator<string>();
-        /// var result = comparator.Compare(list1, list2);
+        /// var result = comparator.IsEqual(list1, list2);
         /// Assert.IsTrue(result.Result, result.Message);
         /// </summary>
         public CompareResult IsEqual(ICollection<T> firstList, ICollection<T> secondList)
@@ -51,12 +51,12 @@ namespace HUTestUtil
                     double double2 = (double)(object)itemInSecond;
                     if (Math.Abs(double1 - double2) > Precision) 
                     {
-                        return new CompareResult() { Result = false, Message = "Values index " + i + " differ. First collection: " + itemInFirst.ToString() + ", second: " + secondList.ElementAt(i) };
+                        return new CompareResult() { Result = false, Message = "Values at index " + i + " differ. First collection: " + itemInFirst.ToString() + ", second: " + secondList.ElementAt(i) };
                     }
                 }
                 else if (!itemInFirst.Equals(itemInSecond)) 
                 {
-                    return new CompareResult() { Result = false, Message = "Values index " + i + " differ. First collection: " + itemInFirst.ToString() + ", second: " + secondList.ElementAt(i) };
+                    return new CompareResult() { Result = false, Message = "Values at index " + i + " differ. First collection: " + itemInFirst.ToString() + ", second: " + secondList.ElementAt(i) };
                 }
                 i++;
             }

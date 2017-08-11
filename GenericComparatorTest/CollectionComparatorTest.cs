@@ -237,5 +237,73 @@ namespace GenericComparatorTest
             Assert.AreEqual(true, result.Result);
             Assert.AreEqual("", result.Message);
         }
+
+        // --------------------------------------------------------------
+        // list of objects
+        // --------------------------------------------------------------
+
+        public class Person
+        {
+            public string Name { get; set; }
+            public int Id { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                Person otherPerson = obj as Person;
+                if (otherPerson == null)
+                {
+                    return false;
+                }
+
+                bool equal = true;
+                equal &= Name.Equals(otherPerson.Name);
+                equal &= Id.Equals(otherPerson.Id);
+                return equal;
+            }
+
+            public override string ToString()
+            {
+                string text = "Name=" + Name + ", Id=" + Id.ToString();
+                return text;
+            }
+        }
+
+        [TestMethod]
+        public void WhenListOfPersonsEqual_ThenTrue()
+        {
+            var comparator = new CollectionComparator<Person>();
+            
+            List<Person> persons = new List<Person>();
+            persons.Add(new Person() { Name = "Hans", Id = 1 });
+            persons.Add(new Person() { Name = "Peter", Id = 2 });
+
+            List<Person> persons2 = new List<Person>();
+            persons2.Add(new Person() { Name = "Hans", Id = 1 });
+            persons2.Add(new Person() { Name = "Peter", Id = 2 });
+
+            var result = comparator.IsEqual(persons, persons2);
+
+            Assert.AreEqual(true, result.Result);
+            Assert.AreEqual("", result.Message);
+        }
+
+        [TestMethod]
+        public void WhenListOfPersonsDiffer_ThenFalse()
+        {
+            var comparator = new CollectionComparator<Person>();
+
+            List<Person> persons = new List<Person>();
+            persons.Add(new Person() { Name = "Hans", Id = 1 });
+            persons.Add(new Person() { Name = "Peter", Id = 2 });
+
+            List<Person> persons2 = new List<Person>();
+            persons2.Add(new Person() { Name = "Hans", Id = 3 });
+            persons2.Add(new Person() { Name = "Peter", Id = 2 });
+
+            var result = comparator.IsEqual(persons, persons2);
+
+            Assert.AreEqual(false, result.Result);
+            Assert.IsTrue(result.Message.Contains("Values at index 0 differ"));
+        }
     }
 }
