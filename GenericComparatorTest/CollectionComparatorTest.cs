@@ -2,6 +2,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HUTestUtil;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Linq.Expressions;
+using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace GenericComparatorTest
 {
@@ -64,7 +69,7 @@ namespace GenericComparatorTest
             var list2 = new List<string>() { "a", "b" };
 
             var result = comparator.IsEqual(list1, list2);
-            
+
             Assert.AreEqual(false, result.Result);
             Assert.AreEqual(true, result.Message.ToLower().Contains("sizes differ"));
         }
@@ -95,7 +100,7 @@ namespace GenericComparatorTest
             var list2 = new List<int>() { 1, 2, 4 };
 
             var result = comparator.IsEqual(list1, list2);
-            
+
             Assert.AreEqual(false, result.Result);
             Assert.AreEqual(true, result.Message.ToLower().Contains("values") && result.Message.ToLower().Contains("differ"));
         }
@@ -170,7 +175,7 @@ namespace GenericComparatorTest
             var comparator = new CollectionComparator<double>();
 
             var array1 = new double[] { 1.000001, 2, 3 };
-            var array2 = new double[] { 1,            2, 3 };
+            var array2 = new double[] { 1, 2, 3 };
 
             var result = comparator.IsEqual(array1, array2);
 
@@ -272,7 +277,7 @@ namespace GenericComparatorTest
         public void WhenListOfPersonsEqual_ThenTrue()
         {
             var comparator = new CollectionComparator<Person>();
-            
+
             List<Person> persons = new List<Person>();
             persons.Add(new Person() { Name = "Hans", Id = 1 });
             persons.Add(new Person() { Name = "Peter", Id = 2 });
@@ -304,6 +309,42 @@ namespace GenericComparatorTest
 
             Assert.AreEqual(false, result.Result);
             Assert.IsTrue(result.Message.Contains("Values at index 0 differ"));
+
+        }
+
+        // --------------------------------------------------------------
+        // EnumerableClass
+        // --------------------------------------------------------------
+
+        [TestMethod]
+        public void EnumberableClassTest()
+        {
+            EnumberableClass tc = new EnumberableClass();
+            int sum = 0;
+            foreach (int val in tc)
+            {
+                sum += val;
+            }
+
+            Assert.AreEqual(tc.Sum(), sum);
+            Assert.AreEqual(1 + 3 + 4 + 5 + 6 + 8 + 10 + 20, sum);
+        }
+
+        class EnumberableClass : IEnumerable<int>
+        {
+            List<int> _list;
+            public EnumberableClass()
+            {
+                _list = new List<int>() { 1, 3, 4, 5, 6, 8, 10, 20 };
+            }
+            public IEnumerator<int> GetEnumerator()
+            {
+                return _list.GetEnumerator();
+            }
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return _list.GetEnumerator();
+            }
         }
     }
 }
